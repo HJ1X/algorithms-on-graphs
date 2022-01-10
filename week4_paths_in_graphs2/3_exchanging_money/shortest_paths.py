@@ -2,11 +2,52 @@
 
 import sys
 import queue
+from collections import deque
 
 
-def shortet_paths(adj, cost, s, distance, reachable, shortest):
-    #write your code here
-    pass
+def relax(u, v, weight_uv, dist, reachable):
+    if dist[v] > dist[u] + weight_uv:
+        dist[v] = dist[u] + weight_uv
+        reachable[v] = 1
+
+
+def shortest_paths(adj, cost, s, dist, reachable, shortest):
+    inf = 10**19
+    dist[s] = 0
+    reachable[s] = 1
+
+    # relaxing edges till v-1 iterations
+    for i in range(len(adj)):
+        for u in range(len(adj)):
+            for v_ind in range(len(adj[u])):
+                relax(u, adj[u][v_ind], cost[u][v_ind], dist, reachable)
+
+    # detecting negative cycles on vth iteration
+    q = deque()
+    for u in range(len(adj)):
+        for v_ind in range(len(adj[u])):
+            v = adj[u][v_ind]
+            weight_uv = cost[u][v_ind]
+
+            # adding relaxed nodes to queue
+            if dist[v] > dist[u] + weight_uv:
+                dist[v] = dist[u] + weight_uv
+                shortest[v] = 0
+                q.appendleft(v)
+
+    # Doing BFS on relaxed nodes
+    visited = [False] * n
+    while q:
+        u = q.pop()
+        visited[u] = True
+
+        for v in adj[u]:
+            if not visited[v]:
+                visited[v] = True
+                q.appendleft(v)
+                shortest[v] = 0
+
+    return
 
 
 if __name__ == '__main__':
@@ -26,7 +67,7 @@ if __name__ == '__main__':
     distance = [10**19] * n
     reachable = [0] * n
     shortest = [1] * n
-    shortet_paths(adj, cost, s, distance, reachable, shortest)
+    shortest_paths(adj, cost, s, distance, reachable, shortest)
     for x in range(n):
         if reachable[x] == 0:
             print('*')

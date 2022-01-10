@@ -3,12 +3,44 @@
 import sys
 
 
+def relaxed(u, v, weight_uv, dist):
+    if dist[v] > dist[u] + weight_uv:
+        dist[v] = dist[u] + weight_uv
+        return True
+
+    return False
+
+
+def contains_negative_cycle(adj, cost, dist, source):
+    dist[source] = 0
+
+    for iter_count in range(len(adj) + 1):
+        relaxed_in_iteration = False
+        for u in range(len(adj)):
+            for v_ind in range(len(adj[u])):
+                if relaxed(u, adj[u][v_ind], cost[u][v_ind], dist):
+                    relaxed_in_iteration = True
+
+        # print(iter_count, relaxed_in_iteration)
+        if not relaxed_in_iteration:
+            break
+
+        if iter_count == len(adj):
+            return True
+
+    return False
+
+
 def negative_cycle(adj, cost):
     inf = float('inf')
 
     # dist array
     dist = [inf] * len(adj)
-    dist
+
+    for node in range(len(adj)):
+        if dist[node] == inf:
+            if contains_negative_cycle(adj, cost, dist, node):
+                return 1
 
     return 0
 
