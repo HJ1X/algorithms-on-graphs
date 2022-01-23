@@ -12,12 +12,12 @@ def relax(u, v, weight_uv, dist, reachable):
 
 
 def shortest_paths(adj, cost, s, dist, reachable, shortest):
-    inf = 10**19
+    inf = float('inf')
     dist[s] = 0
     reachable[s] = 1
 
     # relaxing edges till v-1 iterations
-    for i in range(len(adj)):
+    for i in range(len(adj) - 1):
         for u in range(len(adj)):
             for v_ind in range(len(adj[u])):
                 relax(u, adj[u][v_ind], cost[u][v_ind], dist, reachable)
@@ -47,6 +47,10 @@ def shortest_paths(adj, cost, s, dist, reachable, shortest):
                 q.appendleft(v)
                 shortest[v] = 0
 
+    # print(dist)
+    # print(reachable)
+    # print(shortest)
+
     return
 
 
@@ -64,7 +68,8 @@ if __name__ == '__main__':
         cost[a - 1].append(w)
     s = data[0]
     s -= 1
-    distance = [10**19] * n
+
+    distance = [float('inf')] * n
     reachable = [0] * n
     shortest = [1] * n
     shortest_paths(adj, cost, s, distance, reachable, shortest)
@@ -75,4 +80,3 @@ if __name__ == '__main__':
             print('-')
         else:
             print(distance[x])
-
